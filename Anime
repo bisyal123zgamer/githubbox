@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamVault - Premium Anime & Entertainment Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 25%, #2d1b69 50%, #0f0f23 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .bg-animated {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .logo-text {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            background: linear-gradient(45deg, #00f5ff, #ff00ff, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .anime-card {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .anime-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .anime-card:hover::before {
+            left: 100%;
+        }
+        
+        .anime-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 245, 255, 0.3);
+            border-color: #00f5ff;
+        }
+        
+        .category-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: all 0.3s ease;
+        }
+        
+        .category-btn:hover {
+            background: linear-gradient(45deg, #764ba2, #f093fb);
+            transform: scale(1.05);
+        }
+        
+        /* Enhanced Search Bar Styles */
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .search-wrapper {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 8px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(20px);
+        }
+        
+        .search-wrapper:focus-within {
+            border-color: #00f5ff;
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .search-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 12px 50px 12px 20px;
+            color: white;
+            font-size: 16px;
+            border-radius: 20px;
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .search-icons {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .search-icon, .voice-search-icon, .filter-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(45deg, #00f5ff, #ff00ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .search-icon:hover, .voice-search-icon:hover, .filter-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 245, 255, 0.4);
+        }
+        
+        .voice-search-icon.recording {
+            background: linear-gradient(45deg, #ff4757, #ff6b7a);
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Search Dropdown */
+        .search-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            margin-top: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .search-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .search-section {
+            padding: 15px 20px;
+        }
+        
+        .search-section-title {
+            font-size: 12px;
+            color: #00f5ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .search-suggestion {
+            padding: 10px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .search-suggestion:hover {
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 10px;
+        }
+        
+        .search-suggestion:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .suggestion-text {
+            flex: 1;
+        }
+        
+        .suggestion-category {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Advanced Search Filters */
+        .filter-panel {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 320px;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            margin-top: 10px;
+            padding: 20px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .filter-panel.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .filter-group {
+            margin-bottom: 20px;
+        }
+        
+        .filter-label {
+            display: block;
+            font-size: 14px;
+            color: #00f5ff;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .filter-select, .filter-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: #00f5ff;
+            box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+        }
+        
+        .filter-checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+        
+        .filter-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #00f5ff;
+        }
+        
+        /* Search History */
+        .search-history {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 10px;
+        }
+        
+        .history-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+        
+        .history-remove {
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .history-remove:hover {
+            color: #ff4757;
+            background: rgba(255, 71, 87, 0.1);
+        }
+        
+        .quality-badge {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        
+        .episode-count {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        
+        .floating-nav {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+        
+        .neon-text {
+            text-shadow: 0 0 10px #00f5ff, 0 0 20px #00f5ff, 0 0 30px #00f5ff;
+        }
+        
+        .sidebar {
+            background: linear-gradient(180deg, rgba(26, 26, 46, 0.95), rgba(22, 33, 62, 0.95));
+            backdrop-filter: blur(10px);
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 15px;
+            }
+            
+            .search-container {
+                max-width: 100%;
+            }
+            
+            .filter-panel {
+                width: 280px;
+                right: -20px;
+            }
+        }
+        
+        .featured-banner {
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .featured-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: rotateBg 4s linear infinite;
+        }
+        
+        @keyframes rotateBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="logo-text text-3xl font-bold">StreamVault</div>
+                    <span class="text-sm text-gray-300">Premium Anime Hub</span>
+                </div>
+                
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="category-btn px-4 py-2 rounded-lg text-white font-medium">
+                        <i class="fas fa-home mr-2"></i>Home
+                    </a>
+                    <a href="#" class="category-btn px-4 py-2 rounded-lg text-white font-medium">
+                        <i class="fas fa-fire mr-2"></i>Trending
+                    </a>
+                    <a href="#" class="category-btn px-4 py-2 rounded-lg text-white font-medium">
+                        <i class="fas fa-star mr-2"></i>Top Rated
+                    </a>
+                    <a href="#" class="category-btn px-4 py-2 rounded-lg text-white font-medium">
+                        <i class="fas fa-calendar mr-2"></i>Latest
+                    </a>
+                </nav>
+                
+                <!-- Enhanced Search Container -->
+                <div class="flex items-center space-x-4">
+                    <div class="search-container">
+                        <div class="search-wrapper">
+                            <input type="text" 
+                                   id="searchInput" 
+                                   class="search-input" 
+                                   placeholder="Search anime, movies, characters..."
+                                   autocomplete="off">
+                            <div class="search-icons">
+                                <button class="voice-search-icon" id="voiceSearchBtn" title="Voice Search">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                                <button class="filter-icon" id="filterBtn" title="Advanced Filters">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
+                                <button class="search-icon" id="searchBtn" title="Search">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Search Dropdown -->
+                        <div class="search-dropdown" id="searchDropdown">
+                            <!-- Quick Suggestions -->
+                            <div class="search-section">
+                                <div class="search-section-title">Quick Suggestions</div>
+                                <div class="search-suggestion" data-search="demon slayer">
+                                    <div class="suggestion-icon" style="background: linear-gradient(45deg, #ff6b6b, #ffa500);">
+                                        <i class="fas fa-fire"></i>
+                                    </div>
+                                    <div class="suggestion-text">
+                                        <div>Demon Slayer</div>
+                                        <div class="suggestion-category">Action • Supernatural</div>
+                                    </div>
+                                </div>
+                                <div class="search-suggestion" data-search="attack on titan">
+                                    <div class="suggestion-icon" style="background: linear-gradient(45deg, #667eea, #764ba2);">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div class="suggestion-text">
+                                        <div>Attack on Titan</div>
+                                        <div class="suggestion-category">Action • Drama</div>
+                                    </div>
+                                </div>
+                                <div class="search-suggestion" data-search="one piece">
+                                    <div class="suggestion-icon" style="background: linear-gradient(45deg, #4ecdc4, #44a08d);">
+                                        <i class="fas fa-anchor"></i>
+                                    </div>
+                                    <div class="suggestion-text">
+                                        <div>One Piece</div>
+                                        <div class="suggestion-category">Adventure • Shounen</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Popular Categories -->
+                            <div class="search-section">
+                                <div class="search-section-title">Popular Categories</div>
+                                <div class="search-suggestion" data-search="action anime">
+                                    <div class="suggestion-icon" style="background: linear-gradient(45deg, #ff4757, #ff6b7a);">
+                                        <i class="fas fa-bolt"></i>
+                                    </div>
+                                    <div class="suggestion-text">
+                                        <div>Action Anime</div>
+                                        <div class="suggestion-category">Category</div>
+                                    </div>
+                                </div>
+                                <div class="search-suggestion" data-search="romance anime">
+                                    <div class="suggestion-icon" style="background: linear-gradient(45deg, #ff9ff3, #f368e0);">
+                                        <i class="fas fa-heart"></i>
+                                    </div>
+                                    <div class="suggestion-text">
+                                        <div>Romance Anime</div>
+                                        <div class="suggestion-category">Category</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Search History -->
+                            <div class="search-section">
+                                <div class="search-section-title">Recent Searches</div>
+                                <div class="search-history" id="searchHistory">
+                                    <!-- History items will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Advanced Filter Panel -->
+                        <div class="filter-panel" id="filterPanel">
+                            <div class="filter-group">
+                                <label class="filter-label">Genre</label>
+                                <select class="filter-select" id="genreFilter">
+                                    <option value="">All Genres</option>
+                                    <option value="action">Action</option>
+                                    <option value="adventure">Adventure</option>
+                                    <option value="comedy">Comedy</option>
+                                    <option value="drama">Drama</option>
+                                    <option value="fantasy">Fantasy</option>
+                                    <option value="horror">Horror</option>
+                                    <option value="romance">Romance</option>
+                                    <option value="sci-fi">Sci-Fi</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label class="filter-label">Release Year</label>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="number" class="filter-input" id="yearFrom" placeholder="From" min="1950" max="2024">
+                                    <input type="number" class="filter-input" id="yearTo" placeholder="To" min="1950" max="2024">
+                                </div>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label class="filter-label">Rating</label>
+                                <select class="filter-select" id="ratingFilter">
+                                    <option value="">Any Rating</option>
+                                    <option value="9+">9.0+ Excellent</option>
+                                    <option value="8+">8.0+ Very Good</option>
+                                    <option value="7+">7.0+ Good</option>
+                                    <option value="6+">6.0+ Average</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label class="filter-label">Status</label>
+                                <div class="filter-checkbox-group">
+                                    <label class="filter-checkbox">
+                                        <input type="checkbox" value="ongoing"> Ongoing
+                                    </label>
+                                    <label class="filter-checkbox">
+                                        <input type="checkbox" value="completed"> Completed
+                                    </label>
+                                    <label class="filter-checkbox">
+                                        <input type="checkbox" value="upcoming"> Upcoming
+                                    </label>
+                                    <label class="filter-checkbox">
+                                        <input type="checkbox" value="hiatus"> On Hiatus
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label class="filter-label">Episode Count</label>
+                                <select class="filter-select" id="episodeFilter">
+                                    <option value="">Any Length</option>
+                                    <option value="short">Short (1-12 episodes)</option>
+                                    <option value="standard">Standard (13-26 episodes)</option>
+                                    <option value="long">Long (27+ episodes)</option>
+                                </select>
+                            </div>
+                            
+                            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                <button class="category-btn px-4 py-2 rounded-lg text-white font-medium flex-1" id="applyFilters">
+                                    Apply Filters
+                                </button>
+                                <button class="glass px-4 py-2 rounded-lg text-white font-medium" id="clearFilters">
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="glass p-2 rounded-lg">
+                        <i class="fas fa-user text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 min-h-screen p-6 hidden lg:block">
+            <h3 class="text-xl font-bold mb-6 neon-text">Categories</h3>
+            <div class="space-y-3">
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all">
+                    <i class="fas fa-bolt text-yellow-400"></i>
+                    <span>Action</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all">
+                    <i class="fas fa-heart text-pink-400"></i>
+                    <span>Romance</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all">
+                    <i class="fas fa-laugh text-green-400"></i>
+                    <span>Comedy</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all">
+                    <i class="fas fa-magic text-purple-400"></i>
+                    <span>Fantasy</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all">
+                    <i class="fas fa-robot text-blue-400"></i>
+                    <span>Sci-Fi</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all">
+                    <i class="fas fa-ghost text-red-400"></i>
+                    <span>Horror</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all">
+                    <i class="fas fa-graduation-cap text-indigo-400"></i>
+                    <span>School</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all">
+                    <i class="fas fa-fist-raised text-orange-400"></i>
+                    <span>Shounen</span>
+                </a>
+            </div>
+            
+            <div class="mt-8">
+                <h4 class="text-lg font-semibold mb-4">Quality Options</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600">
+                        <span class="text-sm">4K Ultra HD</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600">
+                        <span class="text-sm">1080p HD</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600">
+                        <span class="text-sm">720p</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600">
+                        <span class="text-sm">480p</span>
+                    </label>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-6">
+            <!-- Featured Banner -->
+            <div class="featured-banner relative z-10">
+                <h2 class="text-3xl font-bold mb-4">Featured This Week</h2>
+                <p class="text-lg mb-6">Discover the most popular anime series and latest episodes</p>
+                <button class="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all">
+                    <i class="fas fa-play mr-2"></i>Watch Now
+                </button>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+                <div class="flex items-center space-x-4">
+                    <select class="glass px-4 py-2 rounded-lg text-white bg-transparent border border-white border-opacity-20">
+                        <option value="">Sort by</option>
+                        <option value="latest">Latest</option>
+                        <option value="popular">Most Popular</option>
+                        <option value="rating">Highest Rated</option>
+                        <option value="alphabetical">A-Z</option>
+                    </select>
+                    <select class="glass px-4 py-2 rounded-lg text-white bg-transparent border border-white border-opacity-20">
+                        <option value="">Year</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="older">Older</option>
+                    </select>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="p-2 rounded-lg glass hover:bg-white hover:bg-opacity-20 transition-all">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="p-2 rounded-lg glass hover:bg-white hover:bg-opacity-20 transition-all">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Results Info -->
+            <div id="searchResults" class="mb-6 hidden">
+                <div class="glass p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">Search Results</h3>
+                    <p class="text-gray-300" id="searchResultsText">Showing results for ""</p>
+                </div>
+            </div>
+
+            <!-- Anime Grid -->
+            <div class="content-grid" id="animeGrid">
+                <!-- Anime Card 1 -->
+                <div class="anime-card rounded-xl p-4 cursor-pointer" data-title="Demon Slayer: Infinity Castle" data-genre="action supernatural" data-year="2024" data-rating="9.2">
+                    <div class="relative mb-4">
+                        <div class="w-full h-48 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-play text-4xl text-white opacity-70"></i>
+                        </div>
+                        <div class="absolute top-2 left-2">
+                            <span class="quality-badge">HD</span>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <span class="episode-count">24 EP</span>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black bg-opacity-60 px-2 py-1 rounded text-xs">
+                            <i class="fas fa-eye mr-1"></i>125K
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Demon Slayer: Infinity Castle</h3>
+                    <p class="text-sm text-gray-400 mb-3">Action, Supernatural, Historical</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <span class="text-sm">9.2</span>
+                        </div>
+                        <span class="text-xs text-gray-400">2024</span>
+                    </div>
+                </div>
+
+                <!-- Anime Card 2 -->
+                <div class="anime-card rounded-xl p-4 cursor-pointer" data-title="Jujutsu Kaisen: Shibuya Arc" data-genre="action school supernatural" data-year="2024" data-rating="9.0">
+                    <div class="relative mb-4">
+                        <div class="w-full h-48 bg-gradient-to-br from-green-600 to-teal-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-play text-4xl text-white opacity-70"></i>
+                        </div>
+                        <div class="absolute top-2 left-2">
+                            <span class="quality-badge">4K</span>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <span class="episode-count">12 EP</span>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black bg-opacity-60 px-2 py-1 rounded text-xs">
+                            <i class="fas fa-eye mr-1"></i>89K
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Jujutsu Kaisen: Shibuya Arc</h3>
+                    <p class="text-sm text-gray-400 mb-3">Action, School, Supernatural</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <span class="text-sm">9.0</span>
+                        </div>
+                        <span class="text-xs text-gray-400">2024</span>
+                    </div>
+                </div>
+
+                <!-- Anime Card 3 -->
+                <div class="anime-card rounded-xl p-4 cursor-pointer" data-title="Chainsaw Man: New Chapter" data-genre="action horror supernatural" data-year="2024" data-rating="8.8">
+                    <div class="relative mb-4">
+                        <div class="w-full h-48 bg-gradient-to-br from-pink-600 to-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-play text-4xl text-white opacity-70"></i>
+                        </div>
+                        <div class="absolute top-2 left-2">
+                            <span class="quality-badge">HD</span>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <span class="episode-count">13 EP</span>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black bg-opacity-60 px-2 py-1 rounded text-xs">
+                            <i class="fas fa-eye mr-1"></i>156K
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Chainsaw Man: New Chapter</h3>
+                    <p class="text-sm text-gray-400 mb-3">Action, Horror, Supernatural</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <span class="text-sm">8.8</span>
+                        </div>
+                        <span class="text-xs text-gray-400">2024</span>
+                    </div>
+                </div>
+
+                <!-- Anime Card 4 -->
+                <div class="anime-card rounded-xl p-4 cursor-pointer" data-title="Attack on Titan: Final Season" data-genre="action drama military" data-year="2023" data-rating="9.4">
+                    <div class="relative mb-4">
+                        <div class="w-full h-48 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-play text-4xl text-white opacity-70"></i>
+                        </div>
+                        <div class="absolute top-2 left-2">
+                            <span class="quality-badge">HD</span>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <span class="episode-count">25 EP</span>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black bg-opacity-60 px-2 py-1 rounded text-xs">
+                            <i class="fas fa-eye mr-1"></i>203K
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Attack on Titan: Final Season</h3>
+                    <p class="text-sm text-gray-400 mb-3">Action, Drama, Military</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <span class="text-sm">9.4</span>
+                        </div>
+                        <span class="text-xs text-gray-400">2023</span>
+                    </div>
+                </div>
+
+                <!-- Anime Card 5 -->
+                <div class="anime-card rounded-xl p-4 cursor-pointer" data-title="My Hero Academia: World Heroes" data-genre="action school superhero" data-year="2024" data-rating="8.7">
+                    <div class="relative mb-4">
+                        <div class="w-full h-48 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-play text-4xl text-white opacity-70"></i>
+                        </div>
+                        <div class="absolute top-2 left-2">
+                            <span class="quality-badge">HD</span>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <span class="episode-count">11 EP</span>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black bg-opacity-60 px-2 py-1 rounded text-xs">
+                            <i class="fas fa-eye mr-1"></i>78K
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">My Hero Academia: World Heroes</h3>
+                    <p class="text-sm text-gray-400 mb-3">Action, School, Superhero</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <span class="text-sm">8.7</span>
+                        </div>
+                        <span class="text-xs text-gray-400">2024</span>
+                    </div>
+                </div>
+
+                <!-- Anime Card 6 -->
+                <div class="anime-card rounded-xl p-4 cursor-pointer" data-title="One Piece: Wano Kuni Arc" data-genre="adventure comedy shounen" data-year="2024" data-rating="9.1">
+                    <div class="relative mb-4">
+                        <div class="w-full h-48 bg-gradient-to-br from-yellow-600 to-red-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-play text-4xl text-white opacity-70"></i>
+                        </div>
+                        <div class="absolute top-2 left-2">
+                            <span class="quality-badge">4K</span>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <span class="episode-count">20 EP</span>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black bg-opacity-60 px-2 py-1 rounded text-xs">
+                            <i class="fas fa-eye mr-1"></i>312K
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">One Piece: Wano Kuni Arc</h3>
+                    <p class="text-sm text-gray-400 mb-3">Adventure, Comedy, Shounen</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <span class="text-sm">9.1</span>
+                        </div>
+                        <span class="text-xs text-gray-400">2024</span>
+                    </div>
+                </div>
+
+                <!-- Anime Card 7 -->
+                <div class="anime-card rounded-xl p-4 cursor-pointer" data-title="Blue Lock: World Cup" data-genre="sports drama shounen" data-year="2024" data-rating="8.5">
+                    <div class="relative mb-4">
+                        <div class="w-full h-48 bg-gradient-to-br from-cyan-600 to-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-play text-4xl text-white opacity-70"></i>
+                        </div>
+                        <div class="absolute top-2 left-2">
+                            <span class="quality-badge">HD</span>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <span class="episode-count">12 EP</span>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black bg-opacity-60 px-2 py-1 rounded text-xs">
+                            <i class="fas fa-eye mr-1"></i>67K
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Blue Lock: World Cup</h3>
+                    <p class="text-sm text-gray-400 mb-3">Sports, Drama, Shounen</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <span class="text-sm">8.5</span>
+                        </div>
+                        <span class="text-xs text-gray-400">2024</span>
+                    </div>
+                </div>
+
+                <!-- Anime Card 8 -->
+                <div class="anime-card rounded-xl p-4 cursor-pointer" data-title="Spy x Family: Season 2" data-genre="comedy action family" data-year="2024" data-rating="8.9">
+                    <div class="relative mb-4">
+                        <div class="w-full h-48 bg-gradient-to-br from-emerald-600 to-green-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-play text-4xl text-white opacity-70"></i>
+                        </div>
+                        <div class="absolute top-2 left-2">
+                            <span class="quality-badge">HD</span>
+                        </div>
+                        <div class="absolute top-2 right-2">
+                            <span class="episode-count">24 EP</span>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black bg-opacity-60 px-2 py-1 rounded text-xs">
+                            <i class="fas fa-eye mr-1"></i>145K
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Spy x Family: Season 2</h3>
+                    <p class="text-sm text-gray-400 mb-3">Comedy, Action, Family</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <span class="text-sm">8.9</span>
+                        </div>
+                        <span class="text-xs text-gray-400">2024</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-12">
+                <button class="category-btn px-8 py-3 rounded-lg text-white font-medium">
+                    <i class="fas fa-arrow-down mr-2"></i>Load More Anime
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating Navigation -->
+    <div class="floating-nav">
+        <div class="flex flex-col space-y-3">
+            <button class="glass p-3 rounded-full hover:bg-white hover:bg-opacity-20 transition-all">
+                <i class="fas fa-bookmark text-xl"></i>
+            </button>
+            <button class="glass p-3 rounded-full hover:bg-white hover:bg-opacity-20 transition-all">
+                <i class="fas fa-heart text-xl"></i>
+            </button>
+            <button class="glass p-3 rounded-full hover:bg-white hover:bg-opacity-20 transition-all">
+                <i class="fas fa-share text-xl"></i>
+            </button>
+            <button class="glass p-3 rounded-full hover:bg-white hover:bg-opacity-20 transition-all">
+                <i class="fas fa-cog text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="glass mt-16 py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="logo-text text-2xl font-bold mb-4">StreamVault</h3>
+                    <p class="text-gray-400">Your premium destination for anime entertainment with the highest quality streaming experience.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <div class="space-y-2">
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors">Latest Episodes</a>
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors">Popular Series</a>
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors">Top Rated</a>
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors">Genres</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Community</h4>
+                    <div class="space-y-2">
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors">Discord</a>
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors">Reddit</a>
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors">Forums</a>
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors">Support</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-youtube text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-600 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 StreamVault. All rights reserved. | Privacy Policy | Terms of Service</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Enhanced Search Functionality
+        class SearchManager {
+            constructor() {
+                this.searchInput = document.getElementById('searchInput');
+                this.searchDropdown = document.getElementById('searchDropdown');
+                this.filterPanel = document.getElementById('filterPanel');
+                this.voiceSearchBtn = document.getElementById('voiceSearchBtn');
+                this.filterBtn = document.getElementById('filterBtn');
+                this.searchBtn = document.getElementById('searchBtn');
+                this.searchHistory = [];
+                this.isListening = false;
+                
+                this.initializeEvents();
+                this.loadSearchHistory();
+                this.updateSearchHistory();
+                
+                // Check for speech recognition support
+                this.recognition = null;
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    this.initVoiceSearch();
+                }
+            }
+            
+            initializeEvents() {
+                // Search input events
+                this.searchInput.addEventListener('focus', () => this.showDropdown());
+                this.searchInput.addEventListener('input', (e) => this.handleSearch(e.target.value));
+                this.searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.performSearch(e.target.value);
+                    }
+                });
+                
+                // Button events
+                this.searchBtn.addEventListener('click', () => this.performSearch(this.searchInput.value));
+                this.voiceSearchBtn.addEventListener('click', () => this.toggleVoiceSearch());
+                this.filterBtn.addEventListener('click', () => this.toggleFilterPanel());
+                
+                // Filter panel events
+                document.getElementById('applyFilters').addEventListener('click', () => this.applyFilters());
+                document.getElementById('clearFilters').addEventListener('click', () => this.clearFilters());
+                
+                // Suggestion clicks
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.search-suggestion')) {
+                        const suggestion = e.target.closest('.search-suggestion');
+                        const searchTerm = suggestion.getAttribute('data-search');
+                        this.performSearch(searchTerm);
+                    }
+                    
+                    // Close dropdowns when clicking outside
+                    if (!e.target.closest('.search-container')) {
+                        this.hideDropdown();
+                        this.hideFilterPanel();
+                    }
+                });
+            }
+            
+            initVoiceSearch() {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                this.recognition = new SpeechRecognition();
+                this.recognition.continuous = false;
+                this.recognition.interimResults = false;
+                this.recognition.lang = 'en-US';
+                
+                this.recognition.onstart = () => {
+                    this.isListening = true;
+                    this.voiceSearchBtn.classList.add('recording');
+                    this.voiceSearchBtn.innerHTML = '<i class="fas fa-stop"></i>';
+                };
+                
+                this.recognition.onend = () => {
+                    this.isListening = false;
+                    this.voiceSearchBtn.classList.remove('recording');
+                    this.voiceSearchBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                };
+                
+                this.recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    this.searchInput.value = transcript;
+                    this.performSearch(transcript);
+                };
+                
+                this.recognition.onerror = (event) => {
+                    console.error('Speech recognition error:', event.error);
+                    this.isListening = false;
+                    this.voiceSearchBtn.classList.remove('recording');
+                    this.voiceSearchBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                };
+            }
+            
+            toggleVoiceSearch() {
+                if (!this.recognition) {
+                    alert('Voice search is not supported in your browser');
+                    return;
+                }
+                
+                if (this.isListening) {
+                    this.recognition.stop();
+                } else {
+                    this.recognition.start();
+                }
+            }
+            
+            showDropdown() {
+                this.searchDropdown.classList.add('show');
+                this.hideFilterPanel();
+            }
+            
+            hideDropdown() {
+                this.searchDropdown.classList.remove('show');
+            }
+            
+            toggleFilterPanel() {
+                this.filterPanel.classList.toggle('show');
+                this.hideDropdown();
+            }
+            
+            hideFilterPanel() {
+                this.filterPanel.classList.remove('show');
+            }
+            
+            handleSearch(query) {
+                if (query.length === 0) {
+                    this.showDropdown();
+                    return;
+                }
+                
+                // Real-time search filtering
+                this.filterAnimeCards(query);
+                
+                if (query.length >= 2) {
+                    // Show relevant suggestions based on query
+                    this.updateSuggestions(query);
+                }
+            }
+            
+            performSearch(query) {
+                if (!query.trim()) return;
+                
+                // Add to search history
+                this.addToHistory(query);
+                
+                // Hide dropdowns
+                this.hideDropdown();
+                this.hideFilterPanel();
+                
+                // Show search results
+                this.showSearchResults(query);
+                
+                // Filter content
+                this.filterAnimeCards(query);
+                
+                // Update input
+                this.searchInput.value = query;
+            }
+            
+            filterAnimeCards(query) {
+                const cards = document.querySelectorAll('.anime-card');
+                const searchResults = document.getElementById('searchResults');
+                const searchResultsText = document.getElementById('searchResultsText');
+                let visibleCount = 0;
+                
+                cards.forEach(card => {
+                    const title = card.getAttribute('data-title').toLowerCase();
+                    const genre = card.getAttribute('data-genre').toLowerCase();
+                    const searchTerm = query.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || genre.includes(searchTerm) || searchTerm === '') {
+                        card.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Show/hide search results info
+                if (query.trim() && visibleCount > 0) {
+                    searchResults.classList.remove('hidden');
+                    searchResultsText.textContent = `Showing ${visibleCount} results for "${query}"`;
+                } else if (query.trim() && visibleCount === 0) {
+                    searchResults.classList.remove('hidden');
+                    searchResultsText.textContent = `No results found for "${query}"`;
+                } else {
+                    searchResults.classList.add('hidden');
+                }
+            }
+            
+            updateSuggestions(query) {
+                // This would typically connect to a real API
+                // For demo purposes, we'll show static suggestions
+                this.showDropdown();
+            }
+            
+            showSearchResults(query) {
+                const searchResults = document.getElementById('searchResults');
+                const searchResultsText = document.getElementById('searchResultsText');
+                searchResults.classList.remove('hidden');
+                searchResultsText.textContent = `Search results for "${query}"`;
+            }
+            
+            addToHistory(query) {
+                // Remove if already exists
+                this.searchHistory = this.searchHistory.filter(item => item !== query);
+                // Add to beginning
+                this.searchHistory.unshift(query);
+                // Keep only last 10
+                this.searchHistory = this.searchHistory.slice(0, 10);
+                // Save to localStorage
+                localStorage.setItem('streamvault_search_history', JSON.stringify(this.searchHistory));
+                // Update display
+                this.updateSearchHistory();
+            }
+            
+            loadSearchHistory() {
+                const stored = localStorage.getItem('streamvault_search_history');
+                if (stored) {
+                    this.searchHistory = JSON.parse(stored);
+                }
+            }
+            
+            updateSearchHistory() {
+                const historyContainer = document.getElementById('searchHistory');
+                historyContainer.innerHTML = '';
+                
+                this.searchHistory.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `
+                        <span class="history-text">${item}</span>
+                        <button class="history-remove" data-query="${item}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    
+                    // Add click events
+                    historyItem.querySelector('.history-text').addEventListener('click', () => {
+                        this.performSearch(item);
+                    });
+                    
+                    historyItem.querySelector('.history-remove').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.removeFromHistory(item);
+                    });
+                    
+                    historyContainer.appendChild(historyItem);
+                });
+            }
+            
+            removeFromHistory(query) {
+                this.searchHistory = this.searchHistory.filter(item => item !== query);
+                localStorage.setItem('streamvault_search_history', JSON.stringify(this.searchHistory));
+                this.updateSearchHistory();
+            }
+            
+            applyFilters() {
+                const genre = document.getElementById('genreFilter').value;
+                const yearFrom = document.getElementById('yearFrom').value;
+                const yearTo = document.getElementById('yearTo').value;
+                const rating = document.getElementById('ratingFilter').value;
+                const episode = document.getElementById('episodeFilter').value;
+                
+                const cards = document.querySelectorAll('.anime-card');
+                let visibleCount = 0;
+                
+                cards.forEach(card => {
+                    let visible = true;
+                    
+                    // Genre filter
+                    if (genre && !card.getAttribute('data-genre').includes(genre)) {
+                        visible = false;
+                    }
+                    
+                    // Year filter
+                    const cardYear = parseInt(card.getAttribute('data-year'));
+                    if (yearFrom && cardYear < parseInt(yearFrom)) {
+                        visible = false;
+                    }
+                    if (yearTo && cardYear > parseInt(yearTo)) {
+                        visible = false;
+                    }
+                    
+                    // Rating filter
+                    if (rating) {
+                        const cardRating = parseFloat(card.getAttribute('data-rating'));
+                        const minRating = parseFloat(rating.replace('+', ''));
+                        if (cardRating < minRating) {
+                            visible = false;
+                        }
+                    }
+                    
+                    card.style.display = visible ? 'block' : 'none';
+                    if (visible) visibleCount++;
+                });
+                
+                // Show results
+                const searchResults = document.getElementById('searchResults');
+                const searchResultsText = document.getElementById('searchResultsText');
+                searchResults.classList.remove('hidden');
+                searchResultsText.textContent = `Filtered results: ${visibleCount} anime found`;
+                
+                this.hideFilterPanel();
+            }
+            
+            clearFilters() {
+                // Reset all filter inputs
+                document.getElementById('genreFilter').value = '';
+                document.getElementById('yearFrom').value = '';
+                document.getElementById('yearTo').value = '';
+                document.getElementById('ratingFilter').value = '';
+                document.getElementById('episodeFilter').value = '';
+                
+                // Clear checkboxes
+                document.querySelectorAll('.filter-checkbox input[type="checkbox"]').forEach(cb => {
+                    cb.checked = false;
+                });
+                
+                // Show all cards
+                document.querySelectorAll('.anime-card').forEach(card => {
+                    card.style.display = 'block';
+                });
+                
+                // Hide search results
+                document.getElementById('searchResults').classList.add('hidden');
+                
+                // Clear search input
+                this.searchInput.value = '';
+                
+                this.hideFilterPanel();
+            }
+        }
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize search manager
+            const searchManager = new SearchManager();
+            
+            // Animate cards on scroll
+            const cards = document.querySelectorAll('.anime-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+
+            // Category filtering
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Smooth scroll for better UX
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Add click handlers for anime cards
+            document.querySelectorAll('.anime-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const title = this.querySelector('h3').textContent;
+                    alert(`Opening ${title}...`);
+                    // Here you would typically navigate to the anime detail page
+                });
+            });
+        });
+    </script>
+</body>
+</html>
